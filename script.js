@@ -1,124 +1,123 @@
 let options = [];
-let totalProbability = 0;
+let currentRotation = 0;  // 保留轉盤的旋轉角度累計值
 
 function addOption() {
-  const nameInput = document.getElementById("nameInput").value;
-  const probabilityInput = parseFloat(document.getElementById("probabilityInput").value);
+  const nameInput = document.getElementById("nameInput").value.trim();
+  const probabilityInput = parseInt(document.getElementById("probabilityInput").value);
 
   if (!nameInput || isNaN(probabilityInput) || probabilityInput <= 0 || probabilityInput > 100) {
-    alert("請輸入有效的選項名稱和機率 (1-100)！");
+    alert("請輸入有效的選項名稱和機率（1-100）");
     return;
   }
 
+  const totalProbability = options.reduce((acc, option) => acc + option.probability, 0);
   if (totalProbability + probabilityInput > 100) {
-    alert("機率總和不能超過100！");
+    alert("總機率不能超過 100%");
     return;
   }
 
   options.push({ name: nameInput, probability: probabilityInput });
-  totalProbability += probabilityInput;
+  updateOptionsList();
+  drawRoulette();
+
   document.getElementById("nameInput").value = "";
   document.getElementById("probabilityInput").value = "";
-
-  renderOptions();
-  drawRoulette();
 }
 
-function deleteOption(index) {
-  totalProbability -= options[index].probability;
-  options.splice(index, 1);
-  renderOptions();
-  drawRoulette();
-}
-
-function renderOptions() {
+function updateOptionsList() {
   const optionsList = document.getElementById("optionsList");
   optionsList.innerHTML = "";
+
   options.forEach((option, index) => {
     const listItem = document.createElement("li");
-    listItem.innerHTML = `${option.name} - ${option.probability}% <button onclick="deleteOption(${index})">Delete</button>`;
+    listItem.textContent = `${option.name} - ${option.probability}% `;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.onclick = () => deleteOption(index);
+    listItem.appendChild(deleteButton);
+
     optionsList.appendChild(listItem);
   });
 }
 
-function startRoulette() {
-  if (totalProbability !== 100) {
-    alert("機率總和必須正好為100%！");
-    return;
-  }
-
-  let spinDegrees = Math.random() * 360 + 3600;
-  let currentAngle = 0;
-  const canvas = document.getElementById("roulette");
-  const ctx = canvas.getContext("2d");
-
-  const animateSpin = () => {
-    currentAngle += (spinDegrees - currentAngle) / 10;
-    ctx.save();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate((currentAngle * Math.PI) / 180);
-    drawRoulette();
-    ctx.restore();
-
-    if (Math.abs(currentAngle - spinDegrees) > 1) {
-      requestAnimationFrame(animateSpin);
-    } else {
-      const result = getRandomOption();
-      document.getElementById("result").textContent = `Result: ${result}`;
-    }
-  };
-
-  animateSpin();
-}
-
-function getRandomOption() {
-  const random = Math.random() * 100;
-  let cumulativeProbability = 0;
-
-  for (let option of options) {
-    cumulativeProbability += option.probability;
-    if (random < cumulativeProbability) {
-      return option.name;
-    }
-  }
+function deleteOption(index) {
+  options.splice(index, 1);
+  updateOptionsList();
+  drawRoulette();
 }
 
 function drawRoulette() {
   const canvas = document.getElementById("roulette");
   const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const totalProbability = options.reduce((acc, option) => acc + option.probability, 0);
 
-  const totalAngle = 2 * Math.PI;
+  if (totalProbability === 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
   let startAngle = 0;
-
   options.forEach(option => {
-    const sliceAngle = (totalAngle * option.probability) / 100;
+    const sliceAngle = (option.probability / 100) * 2 * Math.PI;
+    const endAngle = startAngle + sliceAngle;
 
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2, canvas.height / 2);
-    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, startAngle, startAngle + sliceAngle);
+    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, startAngle, endAngle);
     ctx.closePath();
+
     ctx.fillStyle = getRandomColor();
     ctx.fill();
-    ctx.stroke();
 
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(startAngle + sliceAngle / 2);
+    const textAngle = startAngle + sliceAngle / 2;
+    const textX = canvas.width / 2 + Math.cos(textAngle) * (canvas.width / 3);
+    const textY = canvas.height / 2 + Math.sin(textAngle) * (canvas.height / 3);
     ctx.fillStyle = "#000";
-    ctx.font = "16px Arial";
-    ctx.fillText(option.name, canvas.width / 4, 0);
-    ctx.restore();
+    ctx.font = "14px Arial";
+    ctx.fillText(option.name, textX, textY);
 
-    startAngle += sliceAngle;
+    startAngle = endAngle;
   });
 }
 
 function getRandomColor() {
-  const colors = ["#FFDDC1", "#FEC8D8", "#D4A5A5", "#E7E6ED", "#FFE4E1", "#C9C9FF", "#C8E6C9", "#FFABAB", "#FFD3B6", "#FFAAA5", "#FFECB3", "#E6C9A8"];
-  return colors[Math.floor(Math.random() * colors.length)];
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
-// Initial draw
-drawRoulette();
+function startRoulette() {
+  if (options.length === 0) {
+    alert("請先新增選項");
+    return;
+  }
+
+  const randomNumber = Math.random() * 100;
+  let cumulativeProbability = 0;
+  let result = "";
+
+  for (const option of options) {
+    cumulativeProbability += option.probability;
+    if (randomNumber <= cumulativeProbability) {
+      result = option.name;
+      break;
+    }
+  }
+
+  const resultText = document.getElementById("result");
+  resultText.textContent = `結果：${result}`;
+
+  const totalSpin = 360 * 5;  // 設定多轉幾圈，以增強動畫效果
+  const selectedAngle = 360 * (cumulativeProbability / 100);
+  const finalRotation = totalSpin + selectedAngle - currentRotation;
+
+  currentRotation += finalRotation;
+
+  const wheel = document.getElementById("rouletteContainer");
+  wheel.style.transition = "transform 4s ease-out";
+  wheel.style.transform = `rotate(${currentRotation}deg)`;
+}
