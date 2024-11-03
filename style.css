@@ -1,0 +1,83 @@
+/* 基本頁面樣式 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* 標頭樣式 */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+/* 主內容容器樣式 */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* 區塊標題樣式 */
+section h2 {
+    font-size: 2em;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* 內容段落樣式 */
+section p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 項目列表樣式 */
+ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+
+ul li {
+    margin: 10px 0;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+ul li a:hover {
+    color: #007BFF;
+}
+
+/* 頁尾樣式 */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+footer p {
+    margin: 0;
+}
