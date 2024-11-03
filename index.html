@@ -1,14 +1,26 @@
-<div class="roulette-container">
-  <div id="pointer"></div>
-  <div id="rouletteContainer">
-    <canvas id="roulette" width="300" height="300"></canvas>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Roulette</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>自訂轉盤</h1>
+    <input type="text" id="nameInput" placeholder="Option Name">
+    <input type="number" id="probabilityInput" placeholder="Probability">
+    <button onclick="addOption()">新增選項</button>
+
+    <ul id="optionsList"></ul>
+
+    <button class="start-button" onclick="startRoulette()">Start Roulette</button>
+    <div class="result" id="result">抽到的是:</div>
+
+    <canvas id="roulette" width="400" height="400"></canvas>
   </div>
-</div>
-<div>
-  <input type="text" id="nameInput" placeholder="Option Name" />
-  <input type="number" id="probabilityInput" placeholder="Probability" />
-  <button onclick="addOption()">Add Option</button>
-</div>
-<ul id="optionsList"></ul>
-<button onclick="startRoulette()">按一下以旋轉</button>
-<p id="result">結果：</p>
+
+  <script src="script.js"></script>
+</body>
+</html>
