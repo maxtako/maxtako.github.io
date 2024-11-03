@@ -1,5 +1,5 @@
 let options = [];
-let currentRotation = 0;  // 保留轉盤的旋轉角度累計值
+let currentRotation = 0;
 
 function addOption() {
   const nameInput = document.getElementById("nameInput").value.trim();
@@ -111,7 +111,7 @@ function startRoulette() {
   const resultText = document.getElementById("result");
   resultText.textContent = `結果：${result}`;
 
-  const totalSpin = 360 * 5;  // 設定多轉幾圈，以增強動畫效果
+  const totalSpin = 360 * 5;
   const selectedAngle = 360 * (cumulativeProbability / 100);
   const finalRotation = totalSpin + selectedAngle - currentRotation;
 
