@@ -1,74 +1,54 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  height: 100vh;
+}
+
 .container {
   text-align: center;
   max-width: 500px;
-  margin: auto;
+  background-color: #fff;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.input-area {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.input-area input {
-  margin: 0 5px;
-  padding: 5px;
-  width: 40%;
-}
-
-ul#optionsList {
-  list-style-type: none;
-  padding: 0;
+h1 {
+  color: #333;
 }
 
 .start-button {
+  margin-top: 20px;
   padding: 10px 20px;
-  margin-top: 10px;
   font-size: 16px;
-  background-color: #007bff;
   color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .start-button:hover {
-  background-color: #0056b3;
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 .result {
-  margin-top: 10px;
+  margin-top: 15px;
   font-size: 18px;
+  color: #333;
   font-weight: bold;
 }
-.roulette-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
 
-#rouletteContainer {
-  width: 300px;
-  height: 300px;
-  position: relative;
+canvas {
+  margin-top: 20px;
+  border: 2px solid #007BFF;
   border-radius: 50%;
-  overflow: hidden;
 }
-
-#pointer {
-  position: absolute;
-  top: 0;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 20px solid red; /* 指針的顏色 */
-  z-index: 10;
-  transform: translateY(-20px); /* 將指針往上移至轉盤上方 */
-}
-
