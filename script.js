@@ -1,6 +1,6 @@
 let options = [];
+let currentRotation = 0;  // 保留轉盤的旋轉角度累計值
 
-// 新增選項函數
 function addOption() {
   const nameInput = document.getElementById("nameInput").value.trim();
   const probabilityInput = parseInt(document.getElementById("probabilityInput").value);
@@ -10,24 +10,20 @@ function addOption() {
     return;
   }
 
-  // 確保機率加總不超過100
   const totalProbability = options.reduce((acc, option) => acc + option.probability, 0);
   if (totalProbability + probabilityInput > 100) {
     alert("總機率不能超過 100%");
     return;
   }
 
-  // 將新選項加入 options 陣列
   options.push({ name: nameInput, probability: probabilityInput });
   updateOptionsList();
   drawRoulette();
 
-  // 清空輸入框
   document.getElementById("nameInput").value = "";
   document.getElementById("probabilityInput").value = "";
 }
 
-// 更新選項列表顯示
 function updateOptionsList() {
   const optionsList = document.getElementById("optionsList");
   optionsList.innerHTML = "";
@@ -36,7 +32,6 @@ function updateOptionsList() {
     const listItem = document.createElement("li");
     listItem.textContent = `${option.name} - ${option.probability}% `;
 
-    // 刪除按鈕
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.onclick = () => deleteOption(index);
@@ -46,14 +41,12 @@ function updateOptionsList() {
   });
 }
 
-// 刪除選項
 function deleteOption(index) {
   options.splice(index, 1);
   updateOptionsList();
   drawRoulette();
 }
 
-// 繪製轉盤
 function drawRoulette() {
   const canvas = document.getElementById("roulette");
   const ctx = canvas.getContext("2d");
@@ -74,11 +67,9 @@ function drawRoulette() {
     ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, startAngle, endAngle);
     ctx.closePath();
 
-    // 隨機顏色填充
     ctx.fillStyle = getRandomColor();
     ctx.fill();
 
-    // 標記名稱
     const textAngle = startAngle + sliceAngle / 2;
     const textX = canvas.width / 2 + Math.cos(textAngle) * (canvas.width / 3);
     const textY = canvas.height / 2 + Math.sin(textAngle) * (canvas.height / 3);
@@ -90,7 +81,6 @@ function drawRoulette() {
   });
 }
 
-// 隨機顏色生成
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -100,7 +90,6 @@ function getRandomColor() {
   return color;
 }
 
-// 開始旋轉轉盤
 function startRoulette() {
   if (options.length === 0) {
     alert("請先新增選項");
@@ -119,5 +108,16 @@ function startRoulette() {
     }
   }
 
-  document.getElementById("result").textContent = `結果：${result}`;
+  const resultText = document.getElementById("result");
+  resultText.textContent = `結果：${result}`;
+
+  const totalSpin = 360 * 5;  // 設定多轉幾圈，以增強動畫效果
+  const selectedAngle = 360 * (cumulativeProbability / 100);
+  const finalRotation = totalSpin + selectedAngle - currentRotation;
+
+  currentRotation += finalRotation;
+
+  const wheel = document.getElementById("rouletteContainer");
+  wheel.style.transition = "transform 4s ease-out";
+  wheel.style.transform = `rotate(${currentRotation}deg)`;
 }
