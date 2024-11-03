@@ -1,55 +1,24 @@
-let options = [];
-
-function addOption() {
-  const name = document.getElementById("option-name").value;
-  const probability = parseInt(document.getElementById("option-probability").value, 10);
-
-  if (name && probability > 0 && probability <= 100) {
-    options.push({ name, probability });
-    document.getElementById("option-name").value = "";
-    document.getElementById("option-probability").value = "";
-    displayOptions();
-    drawRoulette();
-  } else {
-    alert("Please enter a valid name and probability (1-100)");
-  }
-}
-
-function displayOptions() {
-  const optionsList = document.getElementById("options");
-  optionsList.innerHTML = "";
-
-  options.forEach((option, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${option.name} - ${option.probability}%`;
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.onclick = () => deleteOption(index);
-    li.appendChild(deleteButton);
-    optionsList.appendChild(li);
-  });
-}
-
-function deleteOption(index) {
-  options.splice(index, 1);
-  displayOptions();
-  drawRoulette();
-}
+let options = [
+  { name: "1", probability: 1 },
+  { name: "2", probability: 1 },
+  { name: "3", probability: 1 },
+  { name: "4", probability: 1 },
+  { name: "5", probability: 1 },
+  { name: "6", probability: 1 },
+  { name: "7", probability: 1 },
+  { name: "8", probability: 1 },
+  { name: "9", probability: 1 },
+  { name: "10", probability: 1 },
+  { name: "11", probability: 1 },
+  { name: "12", probability: 1 },
+];
 
 function startRoulette() {
-  const totalProbability = options.reduce((total, option) => total + option.probability, 0);
-  if (totalProbability !== 100) {
-    alert("Total probability should add up to 100%");
-    return;
-  }
-
-  let spinTime = 3000; // Spin time in milliseconds
   let spinDegrees = Math.random() * 360 + 3600; // Spin at least 10 full rotations
-
+  let currentAngle = 0;
   const canvas = document.getElementById("roulette");
   const ctx = canvas.getContext("2d");
 
-  let currentAngle = 0;
   const animateSpin = () => {
     currentAngle += (spinDegrees - currentAngle) / 10; // Gradually slow down
     ctx.save();
@@ -63,7 +32,7 @@ function startRoulette() {
       requestAnimationFrame(animateSpin);
     } else {
       const result = getRandomOption();
-      document.getElementById("result").textContent = `Result: ${result}`;
+      document.getElementById("result").textContent = `結果：${result}`;
     }
   };
 
@@ -71,16 +40,8 @@ function startRoulette() {
 }
 
 function getRandomOption() {
-  const random = Math.random() * 100;
-  let cumulativeProbability = 0;
-
-  for (const option of options) {
-    cumulativeProbability += option.probability;
-    if (random < cumulativeProbability) {
-      return option.name;
-    }
-  }
-  return null;
+  const random = Math.floor(Math.random() * options.length);
+  return options[random].name;
 }
 
 function drawRoulette() {
@@ -89,11 +50,10 @@ function drawRoulette() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const totalProbability = options.reduce((total, option) => total + option.probability, 0);
+  const sliceAngle = (2 * Math.PI) / options.length;
   let startAngle = 0;
 
   options.forEach(option => {
-    const sliceAngle = (option.probability / totalProbability) * 2 * Math.PI;
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2, canvas.height / 2);
     ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, startAngle, startAngle + sliceAngle);
@@ -107,7 +67,7 @@ function drawRoulette() {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(startAngle + sliceAngle / 2);
     ctx.fillStyle = "#000";
-    ctx.font = "16px Arial";
+    ctx.font = "20px Arial";
     ctx.fillText(option.name, canvas.width / 4, 0);
     ctx.restore();
 
@@ -116,13 +76,9 @@ function drawRoulette() {
 }
 
 function getRandomColor() {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+  const colors = ["#FFDDC1", "#FEC8D8", "#D4A5A5", "#E7E6ED", "#FFE4E1", "#C9C9FF", "#C8E6C9", "#FFABAB", "#FFD3B6", "#FFAAA5", "#FFECB3", "#E6C9A8"];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// Initial draw of the empty roulette wheel
+// Initial draw of the roulette wheel
 drawRoulette();
