@@ -8,10 +8,17 @@
 </head>
 <body>
   <div class="container">
-    <h1>隨機抽籤輪盤</h1>
+    <h1>自訂轉盤</h1>
+    <input type="text" id="nameInput" placeholder="Option Name">
+    <input type="number" id="probabilityInput" placeholder="Probability">
+    <button onclick="addOption()">Add Option</button>
+
+    <ul id="optionsList"></ul>
+
+    <button class="start-button" onclick="startRoulette()">Start Roulette</button>
+    <div class="result" id="result">Result:</div>
+
     <canvas id="roulette" width="400" height="400"></canvas>
-    <button class="start-button" onclick="startRoulette()">按一下以旋轉</button>
-    <div class="result" id="result">結果：</div>
   </div>
 
   <script src="script.js"></script>
